@@ -1,0 +1,119 @@
+.contentContainer {
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.brandingContent {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.loginFormContent {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.sideBarHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2em;
+}
+
+.tblMainContainer{
+    background-color: #FFFF;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.tblContainer{
+    padding: 26px;
+    text-align:left;
+
+    td, th, tr{
+        padding: 18px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    td{
+        color: #48505e;
+    }
+
+    th{
+        color: #667085;
+    }
+    
+    tr{
+        border-bottom: 1px solid #00000020;
+    }
+
+    tr:hover{
+        background-color: #00000007;
+    }
+
+    tfoot{
+        background-color: #00000014;
+    }
+    
+    table{
+        width: 100%;
+        margin-top: 40px;
+        border-collapse: collapse;
+    }
+}
+
+.sectionLayout{
+    display: flex;
+    flex: 1;
+    overflow: auto;
+    justify-content: center;
+    margin-top: 55px;
+}
+
+.sectionContainer {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.inputText{
+    width: 30%;
+}
+
+.dispatch-card {
+    background-color: #FFF;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 2px 1px 4px #00000010;
+    display: flex;
+    flex-direction: column;
+}
+
+.dispatch-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.route-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dispatch-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 58;
+    width: 100%;
+}
