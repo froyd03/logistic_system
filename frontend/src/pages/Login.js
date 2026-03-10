@@ -25,10 +25,10 @@ const Login = () => {
   };
 
   const demoAccounts = [
-    { role: 'Admin', email: 'admin@hotel.com', password: 'Admin@123', color: 'bg-purple-50 border-purple-200 text-purple-700' },
-    { role: 'Transport Mgr', email: 'transport@hotel.com', password: 'Manager@123', color: 'bg-blue-50 border-blue-200 text-blue-700' },
-    { role: 'Driver', email: 'juan@hotel.com', password: 'Driver@123', color: 'bg-green-50 border-green-200 text-green-700' },
-    { role: 'Staff', email: 'maria@hotel.com', password: 'Staff@123', color: 'bg-orange-50 border-orange-200 text-orange-700' }
+    // { role: 'Admin', email: 'admin@hotel.com', password: 'Admin@123', color: 'bg-purple-50 border-purple-200 text-purple-700' },
+    // { role: 'Transport Mgr', email: 'transport@hotel.com', password: 'Manager@123', color: 'bg-blue-50 border-blue-200 text-blue-700' },
+    // { role: 'Driver', email: 'juan@hotel.com', password: 'Driver@123', color: 'bg-green-50 border-green-200 text-green-700' },
+    // { role: 'Staff', email: 'maria@hotel.com', password: 'Staff@123', color: 'bg-orange-50 border-orange-200 text-orange-700' }
   ];
 
   return (
@@ -45,9 +45,9 @@ const Login = () => {
             </div>
           </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">Fleet & Transportation<br />Operations System</h2>
-          <p className="text-blue-200 text-sm leading-relaxed mb-8">
+          {/* {<p className="text-blue-200 text-sm leading-relaxed mb-8">
             Manage your entire hotel and restaurant fleet operations with real-time tracking, driver management, cost analytics, and automated dispatch.
-          </p>
+          </p>} */}
           <div className="grid grid-cols-2 gap-3">
             {['Fleet & Vehicle Managmnt',
               'Vehicle Reservation & Dispatch',
@@ -96,7 +96,7 @@ const Login = () => {
             </form>
 
             <div className="mt-6">
-              <p className="text-xs text-gray-400 mb-3 text-center">Demo Accounts</p>
+              {/* <p className="text-xs text-gray-400 mb-3 text-center">Demo Accounts</p> */}
               <div className="grid grid-cols-2 gap-2">
                 {demoAccounts.map(a => (
                   <button
