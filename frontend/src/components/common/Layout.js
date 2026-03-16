@@ -19,6 +19,8 @@ import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+
 
 const Header = (props) => {
     const [greetUser, setGreetUser] = useState();
@@ -218,7 +220,10 @@ const Sidebar = ({ pendingCount }) => {
 
       {/* Nav */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-       
+       <div className="pt-3">
+          <NavItem to="/dashboard" icon={<HomeOutlinedIcon />} label="Dashboard" />
+        </div>
+
         <div className="pt-3">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 mb-2">FVM</p>
           <NavItem to="/vehicles" icon={<LocalShippingOutlinedIcon />} label="Vehicles" />

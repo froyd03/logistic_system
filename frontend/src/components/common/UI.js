@@ -66,7 +66,7 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
 // Card
 export const Card = ({ title, value, icon, color = 'blue', subtitle }) => {
   const colors = {
-    blue: 'from-blue-500 to-blue-600',
+    blue: 'bg-[linear-gradient(to_right,#5278e078,#5278e078)]',
     green: 'from-green-500 to-green-600',
     yellow: 'from-yellow-500 to-yellow-600',
     red: 'from-red-500 to-red-600',
@@ -148,7 +148,7 @@ export const Select = ({ label, error, options = [], ...props }) => (
 // Button
 export const Button = ({ variant = 'primary', size = 'md', loading, children, ...props }) => {
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+    primary: 'bg-[#5379E1] hover:bg-blue-700 text-white',
     danger: 'bg-red-600 hover:bg-red-700 text-white',
     success: 'bg-green-600 hover:bg-green-700 text-white',
     secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-700',

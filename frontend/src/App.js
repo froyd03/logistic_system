@@ -65,7 +65,7 @@ const App = () => (
 
         {/* Dashboard */}
         <Route path="/dashboard" element={
-          <ProtectedRoute><Page component={Dashboard} /></ProtectedRoute>
+          <ProtectedRoute><Page title="Dashboard" component={Dashboard} /></ProtectedRoute>
         } />
 
         {/* Fleet */}

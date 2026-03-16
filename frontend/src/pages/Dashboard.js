@@ -5,6 +5,12 @@ import {
 } from 'recharts';
 import { analyticsAPI } from '../services/api';
 import { Card, Spinner } from '../components/common/UI';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
@@ -42,18 +48,17 @@ const Dashboard = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Operations Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Fleet & Transportation Overview</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card title="Total Vehicles" value={cards.totalVehicles || 0} icon="🚗" color="blue" subtitle="Active fleet" />
-        <Card title="Active Drivers" value={cards.activeDrivers || 0} icon="👤" color="green" subtitle="Available now" />
-        <Card title="In Transit" value={cards.inTransit || 0} icon="🗺️" color="yellow" subtitle="On the road" />
-        <Card title="Pending Requests" value={cards.pendingReservations || 0} icon="📋" color="orange" subtitle="Awaiting approval" />
-        <Card title="Monthly Cost" value={`₱${(cards.monthlyExpense || 0).toLocaleString()}`} icon="💰" color="purple" subtitle="This month" />
-        <Card title="Fuel Consumed" value={`${(cards.fuelConsumption || 0).toFixed(0)}L`} icon="⛽" color="red" subtitle="This month" />
-        <Card title="Completed Trips" value={cards.completedTrips || 0} icon="✅" color="green" subtitle="This month" />
+        <Card title="Total Vehicles" value={cards.totalVehicles || 0} icon={<LocalShippingOutlinedIcon/>} color="blue" subtitle="Active fleet" />
+        <Card title="Active Drivers" value={cards.activeDrivers || 0} icon={<EngineeringOutlinedIcon />} color="blue" subtitle="Available now" />
+        <Card title="In Transit" value={cards.inTransit || 0} icon={<LocationOnOutlinedIcon />} color="blue" subtitle="On the road" />
+        <Card title="Pending Requests" value={cards.pendingReservations || 0} icon={<EventAvailableOutlinedIcon />} color="blue" subtitle="Awaiting approval" />
+        {/* <Card title="Monthly Cost" value={`₱${(cards.monthlyExpense || 0).toLocaleString()}`} icon="💰" color="purple" subtitle="This month" /> */}
+        {/* <Card title="Fuel Consumed" value={`${(cards.fuelConsumption || 0).toFixed(0)}L`} icon="⛽" color="red" subtitle="This month" /> */}
+        {/* <Card title="Completed Trips" value={cards.completedTrips || 0} icon="✅" color="green" subtitle="This month" /> */}
       </div>
 
       {/* Charts Row 1 */}
@@ -112,10 +117,10 @@ const Dashboard = () => {
         <h3 className="text-sm font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'New Reservation', icon: '📋', href: '/reservations?new=1', color: 'bg-blue-50 hover:bg-blue-100 text-blue-700' },
-            { label: 'Add Vehicle', icon: '🚗', href: '/vehicles?new=1', color: 'bg-green-50 hover:bg-green-100 text-green-700' },
-            { label: 'Add Driver', icon: '👤', href: '/drivers?new=1', color: 'bg-purple-50 hover:bg-purple-100 text-purple-700' },
-            { label: 'Log Expense', icon: '💰', href: '/expenses?new=1', color: 'bg-orange-50 hover:bg-orange-100 text-orange-700' }
+            { label: 'New Reservation', icon: <EventAvailableOutlinedIcon />, href: '/reservations?new=1', color: 'bg-blue-50 hover:bg-blue-100 text-blue-700' },
+            { label: 'Add Vehicle', icon: <LocalShippingOutlinedIcon />, href: '/vehicles?new=1', color: 'bg-green-50 hover:bg-green-100 text-green-700' },
+            { label: 'Add Driver', icon: <EngineeringOutlinedIcon />, href: '/drivers?new=1', color: 'bg-purple-50 hover:bg-purple-100 text-purple-700' },
+            { label: 'Log Expense', icon: <AttachMoneyIcon />, href: '/expenses?new=1', color: 'bg-orange-50 hover:bg-orange-100 text-orange-700' }
           ].map(a => (
             <a
               key={a.label}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { analyticsAPI, vehicleAPI, driverAPI } from '../services/api';
 import { Button, Input, Select, Modal } from '../components/common/UI';
 import toast from 'react-hot-toast';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 // ─── Expense Form ────────────────────────────────────────────────────────────
 const ExpenseForm = ({ onSave, onClose }) => {
@@ -193,7 +195,7 @@ const Expenses = () => {
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => setModal('expense')}
         >
-          <div className="text-4xl mb-3">💰</div>
+          <div className="text-4xl mb-3"><AttachMoneyIcon sx={{fontSize: 38, color: '#0080008a'}}/></div>
           <h3 className="text-lg font-semibold text-gray-900">Record Expense</h3>
           <p className="text-sm text-gray-500 mt-1">Log maintenance, tolls, parking, insurance, or other costs</p>
         </div>
@@ -201,7 +203,7 @@ const Expenses = () => {
           className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => setModal('fuel')}
         >
-          <div className="text-4xl mb-3">⛽</div>
+          <div className="text-4xl mb-3"><LocalGasStationIcon sx={{fontSize: 38, color: '#ff000085'}}/></div>
           <h3 className="text-lg font-semibold text-gray-900">Log Fuel Fillup</h3>
           <p className="text-sm text-gray-500 mt-1">Record fuel quantity, price per liter, and station details</p>
         </div>

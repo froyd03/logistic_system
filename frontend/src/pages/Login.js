@@ -16,7 +16,7 @@ const Login = () => {
     try {
       await login(form.email, form.password);
       toast.success('Welcome back!');
-      navigate('/vehicles');
+      navigate('/dashboard');
     } catch (err) {
       toast.error(err.message || 'Invalid credentials');
     } finally {
@@ -86,7 +86,7 @@ const Login = () => {
               </div>
               <button
                 type="submit" disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-[#5379E1] hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -248,15 +248,15 @@ const Reservations = () => {
 
                     {/* Vehicle & Driver */}
                     <p className="text-sm font-medium text-gray-900">{r.purpose?.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
-                    <div className="flex items-center ">
+                    {r.vehicle?.name && r.vehicle?.plate_number && <div className="flex items-center ">
                       <div className="flex items-center gap-2 text-sm">
                         <span className="text-lg"><EngineeringOutlinedIcon sx={{fontSize: 34, color:'#0000008e'}}/></span>
                         <div>
                           <p className="font-medium text-gray-900">{r.driver?.user?.name}</p>
-                          <p className="text-xs text-gray-400">{r.vehicle.name} • ({r.vehicle.plate_number})</p>
+                          <p className="text-xs text-gray-400">{r.vehicle?.name} • ({r.vehicle?.plate_number})</p>
                         </div>
                       </div>
-                    </div>
+                    </div>}
 
                     {/* Route */}
                     <div className="flex justify-evenly w-full">
@@ -278,7 +278,7 @@ const Reservations = () => {
                       <span>•</span>
                       <span>{r.passenger_count} person(s)</span>
                     </div>
-                    <div>
+                    <div className='flex gap-2'>
                       {r.status === 'pending' && isManager() && (
                         <>
                           <Button size="sm" variant="success" onClick={() => setModal({ type: 'approve', data: r })}>Approve</Button>
@@ -286,7 +286,7 @@ const Reservations = () => {
                         </>
                       )}
                       {r.status === 'approved' && isManager() && (
-                        <Button size="sm" onClick={() => setModal({ type: 'dispatch', data: r })}>🚀 Dispatch</Button>
+                        <Button size="sm" onClick={() => setModal({ type: 'dispatch', data: r })}>Dispatch</Button>
                       )}
                       {!['completed', 'cancelled', 'rejected'].includes(r.status) && (
                         <Button size="sm" variant="secondary" onClick={() => handleCancel(r.id)}>Cancel</Button>
