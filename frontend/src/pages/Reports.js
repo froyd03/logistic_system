@@ -62,7 +62,7 @@ const Reports = () => {
         <div className="flex items-center gap-3">
           <select value={year} onChange={e => setYear(e.target.value)}
             className="px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-            {[2023, 2024, 2025].map(y => <option key={y} value={y}>{y}</option>)}
+            {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
           </select>
           <Button onClick={() => handleExport('pdf')} loading={exporting === 'pdf'} variant="outline" size="sm">📄 Export PDF</Button>
           <Button onClick={() => handleExport('csv')} loading={exporting === 'csv'} variant="outline" size="sm">📊 Export CSV</Button>
