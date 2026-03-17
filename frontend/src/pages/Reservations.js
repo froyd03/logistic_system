@@ -95,11 +95,7 @@ const ApproveModal = ({ reservation, onSave, onClose }) => {
       <Select label="Assign Vehicle" name="vehicle_id" value={form.vehicle_id} onChange={e => setForm(f => ({ ...f, vehicle_id: e.target.value }))} options={vehicles} />
       <Select label="Assign Driver" name="driver_id" value={form.driver_id} onChange={e => setForm(f => ({ ...f, driver_id: e.target.value }))} options={drivers} />
       <div className="flex gap-3 pt-2">
-<<<<<<< HEAD
-        <Button onClick={handleApprove} loading={loading} className="flex-1">✅ Approve & Assign</Button>
-=======
         <Button onClick={handleApprove} loading={loading} className="flex-1">Approve & Assign</Button>
->>>>>>> 2a01072 (changes)
         <Button variant="secondary" onClick={onClose}>Cancel</Button>
       </div>
     </div>
@@ -130,11 +126,7 @@ const DispatchModal = ({ reservation, onSave, onClose }) => {
         <Input label="Fuel Level (%)" type="number" value={form.fuel_start} onChange={e => setForm(f => ({ ...f, fuel_start: e.target.value }))} min={0} max={100} />
       </div>
       <div className="flex gap-3 pt-2">
-<<<<<<< HEAD
-        <Button onClick={handleDispatch} loading={loading} variant="success" className="flex-1">🚀 Dispatch Now</Button>
-=======
         <Button onClick={handleDispatch} loading={loading} variant="success" className="flex-1">Dispatch Now</Button>
->>>>>>> 2a01072 (changes)
         <Button variant="secondary" onClick={onClose}>Cancel</Button>
       </div>
     </div>
