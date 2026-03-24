@@ -16,7 +16,8 @@ const VehicleMaintenance = sequelize.define('VehicleMaintenance', {
   next_service_km: { type: DataTypes.DECIMAL(10, 2) },
   status: { type: DataTypes.ENUM('scheduled', 'in_progress', 'completed', 'cancelled'), defaultValue: 'scheduled' },
   notes: { type: DataTypes.TEXT },
-  performed_by: { type: DataTypes.UUID }
+  performed_by: { type: DataTypes.UUID },
+  completed_at: { type: DataTypes.DATE }        // set when status → completed
 }, { tableName: 'vehicle_maintenance', paranoid: true });
 
 // ─── VehicleDocument ─────────────────────────────────────────────────────────
@@ -134,7 +135,7 @@ const TransportExpense = sequelize.define('TransportExpense', {
 // ─── FuelLog ──────────────────────────────────────────────────────────────────
 const FuelLog = sequelize.define('FuelLog', {
   id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-  vehicle_id: { type: DataTypes.UUID, allowNull: false },   // FIX: was allowNull: false — form doesn't always have vehicle
+  vehicle_id: { type: DataTypes.UUID, allowNull: true },   // FIX: was allowNull: false — form doesn't always have vehicle
   driver_id: { type: DataTypes.UUID },
   trip_log_id: { type: DataTypes.UUID },
   fuel_date: { type: DataTypes.DATE, allowNull: false },

@@ -12,6 +12,20 @@ const STATUS_OPTIONS = ['scheduled', 'in_progress', 'completed', 'cancelled'].ma
   value: v, label: v.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())
 }));
 
+// Status options for the new record form (no 'completed' — use the Complete button instead)
+const STATUS_FORM_OPTS = [
+  { value: 'scheduled',   label: 'Scheduled' },
+  { value: 'in_progress', label: 'In Progress' },
+];
+
+// Full status options for the inline table dropdown
+const STATUS_TABLE_OPTS = [
+  { value: 'scheduled',   label: 'Scheduled' },
+  { value: 'in_progress', label: 'In Progress' },
+  { value: 'completed',   label: 'Completed' },
+  { value: 'cancelled',   label: 'Cancelled' },
+];
+
 const MaintenanceForm = ({ vehicles, onSave, onClose }) => {
   const [form, setForm] = useState({
     vehicle_id: '',
@@ -68,7 +82,6 @@ const MaintenanceForm = ({ vehicles, onSave, onClose }) => {
         <Select label="Type *" name="maintenance_type" value={form.maintenance_type} onChange={handleChange} options={MAINTENANCE_TYPES} />
         <Select label="Status" name="status" value={form.status} onChange={handleChange} options={STATUS_OPTIONS} />
         <Input label="Cost (₱)" type="number" name="cost" value={form.cost} onChange={handleChange} min={0} step="0.01" />
-        <Input label="Odometer at Service (km)" type="number" name="odometer_at_service" value={form.odometer_at_service} onChange={handleChange} />
         <Input label="Start Date *" type="date" name="start_date" value={form.start_date} onChange={handleChange} required />
         <Input label="End Date" type="date" name="end_date" value={form.end_date} onChange={handleChange} />
         <Input label="Next Service Date" type="date" name="next_service_date" value={form.next_service_date} onChange={handleChange} />
@@ -99,68 +112,171 @@ const typeColor = {
   inspection: 'bg-purple-100 text-purple-800'
 };
 
+const CompleteModal = ({ record, onSave, onClose }) => {
+  const [form, setForm] = useState({
+    end_date: new Date().toISOString().split('T')[0],
+    cost: record.cost || '',
+    next_service_date: record.next_service_date || '',
+    next_service_km: record.next_service_km || '',
+    notes: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await vehicleAPI.completeMaintenance(record.vehicle_id, record.id, form);
+      toast.success(`✅ Maintenance completed — vehicle is now available`);
+      onSave();
+    } catch (err) {
+      toast.error(err.message || 'Failed to complete maintenance');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm">
+        <p className="font-semibold text-green-900">Complete Maintenance</p>
+        <p className="text-green-700 mt-1">🚗 {record.vehicle?.name} ({record.vehicle?.plate_number})</p>
+        <p className="text-green-600 text-xs mt-1">{record.description}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <Input label="Completion Date *" type="date" name="end_date"
+          value={form.end_date} onChange={e => setForm(f => ({...f, end_date: e.target.value}))} required />
+        <Input label="Final Cost (₱)" type="number" name="cost" min={0} step="0.01"
+          value={form.cost} onChange={e => setForm(f => ({...f, cost: e.target.value}))} />
+        <Input label="Next Service Date" type="date" name="next_service_date"
+          value={form.next_service_date} onChange={e => setForm(f => ({...f, next_service_date: e.target.value}))} />
+        <Input label="Next Service at (km)" type="number" name="next_service_km"
+          value={form.next_service_km} onChange={e => setForm(f => ({...f, next_service_km: e.target.value}))} />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Completion Notes</label>
+        <textarea value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} rows={2}
+          placeholder="Work completed, parts replaced, observations..."
+          className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
+        Completing this maintenance will automatically set the vehicle status back to <strong>Available</strong>.
+      </div>
+      <div className="flex gap-3 pt-2">
+        <Button type="submit" loading={loading} variant="success" className="flex-1">✅ Mark as Completed</Button>
+        <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+      </div>
+    </form>
+  );
+};
+
+
+const InlineStatusDropdown = ({ record, onChange }) => {
+  const [updating, setUpdating] = useState(false);
+
+  const handleChange = async (e) => {
+    const newStatus = e.target.value;
+    if (newStatus === record.status) return;
+    if (record.status === 'completed') {
+      toast.error('Cannot change a completed maintenance record');
+      return;
+    }
+    // Delegate 'completed' to the Complete modal via onChange callback
+    onChange(record, newStatus);
+  };
+
+  const statusStyle = {
+    scheduled:   'bg-gray-100 text-gray-700',
+    in_progress: 'bg-orange-100 text-orange-800',
+    completed:   'bg-green-100 text-green-800',
+    cancelled:   'bg-red-100 text-red-800'
+  };
+
+  return (
+    <select
+      value={record.status}
+      onChange={handleChange}
+      disabled={record.status === 'completed' || record.status === 'cancelled' || updating}
+      className={`px-2 py-1 rounded-lg text-xs font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${statusStyle[record.status]} ${record.status === 'completed' || record.status === 'cancelled' ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-80'}`}
+    >
+      {STATUS_TABLE_OPTS.map(o => (
+        <option key={o.value} value={o.value}
+          disabled={o.value === 'completed' && record.status !== 'in_progress'}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  );
+};
+
 const Maintenance = () => {
+  const [showForm, setShowForm] = useState(false);
   const [records, setRecords] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [showForm, setShowForm] = useState(false);
+  const [modal, setModal] = useState({ type: null, data: null });
 
-  // Fetch all vehicles for the dropdown and to gather their maintenance logs
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [vRes] = await Promise.all([
+      const [mRes, vRes] = await Promise.all([
+        vehicleAPI.getAllMaintenance({ page, limit: 15, status: statusFilter || undefined }),
         vehicleAPI.getAll({ limit: 100 })
       ]);
-      const vehicleList = vRes.data || [];
-      setVehicles(vehicleList);
-
-      // Gather maintenance logs from each vehicle's details
-      const allLogs = [];
-      await Promise.all(
-        vehicleList.slice(0, 20).map(async (v) => {
-          try {
-            const detail = await vehicleAPI.getById(v.id);
-            const logs = detail.data?.maintenanceLogs || [];
-            logs.forEach(log => allLogs.push({ ...log, vehicle: { name: v.name, plate_number: v.plate_number } }));
-          } catch { /* skip */ }
-        })
-      );
-
-      // Sort by date descending
-      allLogs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-      const filtered = search
-        ? allLogs.filter(l =>
-            l.description?.toLowerCase().includes(search.toLowerCase()) ||
-            l.vehicle?.name?.toLowerCase().includes(search.toLowerCase()) ||
-            l.provider?.toLowerCase().includes(search.toLowerCase())
-          )
-        : allLogs;
-
-      const perPage = 15;
-      setTotalPages(Math.max(1, Math.ceil(filtered.length / perPage)));
-      setRecords(filtered.slice((page - 1) * perPage, page * perPage));
+      setRecords(mRes.data || []);
+      setTotalPages(mRes.pagination?.totalPages || 1);
+      setVehicles(vRes.data || []);
     } catch (err) {
-      toast.error('Failed to load maintenance records');
       console.error('[Maintenance] fetch error:', err);
+      toast.error('Failed to load maintenance records');
     } finally { setLoading(false); }
-  }, [page, search]);
+  }, [page, statusFilter]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const filtered = search
+    ? records.filter(r =>
+        r.description?.toLowerCase().includes(search.toLowerCase()) ||
+        r.vehicle?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        r.provider?.toLowerCase().includes(search.toLowerCase())
+      )
+    : records;
+
+  // Handle inline dropdown change
+  const handleStatusChange = async (record, newStatus) => {
+    // 'completed' → open the Complete modal for proper data entry
+    if (newStatus === 'completed') {
+      setModal({ type: 'complete', data: record });
+      return;
+    }
+    // Other status changes → direct API call
+    try {
+      await vehicleAPI.updateMaintenanceStatus(record.vehicle_id, record.id, { status: newStatus });
+      toast.success(`Status updated to "${newStatus}"`);
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to update status');
+    }
+  };
+
+  const close = () => setModal({ type: null, data: null });
+  
   return (
     <div>
 
-      <div className='tblMainContainer'>
+      <div  className='tblMainContainer' style={{maxWidth: '100%'}}>
         <div className='tblContainer'>
           <SearchBar 
             value={search} 
             onChange={v => { setSearch(v); setPage(1); }} 
             placeholder="Search by vehicle, description, or provider..." >
+              <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
+                className="px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Status</option>
+                {STATUS_TABLE_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
               <Button onClick={() => setShowForm(true)}>+ Add Record</Button>
           </ SearchBar >
 
@@ -173,7 +289,7 @@ const Maintenance = () => {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {['Vehicle', 'Type', 'Description', 'Provider', 'Cost', 'Date', 'Status'].map(h => (
+                {['Vehicle', 'Type', 'Description', 'Provider', 'Cost', 'odometer', 'Date', 'Status', 'actions'].map(h => (
                   <th key={h}>{h}</th>
                 ))}
               </tr>
@@ -195,10 +311,33 @@ const Maintenance = () => {
                   <td>
                     {r.cost ? `₱${Number(r.cost).toLocaleString()}` : '—'}
                   </td>
+                  <td className="px-4 py-4 text-sm text-gray-600">
+                    {r.odometer_at_service ? `${Number(r.odometer_at_service).toLocaleString()} km` : '—'}
+                  </td>
                   <td>
                     {r.start_date ? format(new Date(r.start_date), 'MMM dd, yyyy') : '—'}
                   </td>
-                  <td><StatusBadge status={r.status} /></td>
+                  
+                  <td className="px-4 py-4">
+                    <InlineStatusDropdown record={r} onChange={handleStatusChange} />
+                  </td>
+                  <td className="px-4 py-4">
+                    {/* Complete button only for in_progress records */}
+                    {r.status === 'in_progress' && (
+                      <Button
+                        size="sm"
+                        variant="success"
+                        onClick={() => setModal({ type: 'complete', data: r })}
+                      >
+                        Complete
+                      </Button>
+                    )}
+                    {r.status === 'completed' && r.next_service_date && (
+                      <div className="text-xs text-blue-600">
+                        Next: {format(new Date(r.next_service_date), 'MMM dd, yyyy')}
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -206,7 +345,6 @@ const Maintenance = () => {
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
         </div>
-      
 
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Add Maintenance Record" size="lg">
         <MaintenanceForm
@@ -214,6 +352,16 @@ const Maintenance = () => {
           onSave={() => { setShowForm(false); fetchData(); }}
           onClose={() => setShowForm(false)}
         />
+      </Modal>
+
+      <Modal isOpen={modal.type === 'complete'} onClose={close} title="Complete Maintenance" size="md">
+        {modal.data && (
+          <CompleteModal
+            record={modal.data}
+            onSave={() => { close(); fetchData(); }}
+            onClose={close}
+          />
+        )}
       </Modal>
     </div>
   );

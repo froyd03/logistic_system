@@ -41,7 +41,15 @@ export const vehicleAPI = {
   addMaintenance: (id, data) => API.post(`/vehicles/${id}/maintenance`, data),
   uploadDocument: (id, formData) => API.post(`/vehicles/${id}/documents`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
-  })
+  }),
+
+  getAllMaintenance: (params) => API.get('/maintenance', { params }),
+  completeMaintenance: (vehicleId, maintenanceId, data) =>
+    API.patch(`/vehicles/${vehicleId}/maintenance/${maintenanceId}/complete`, data),
+  updateMaintenanceStatus: (vehicleId, maintenanceId, data) =>
+    API.patch(`/vehicles/${vehicleId}/maintenance/${maintenanceId}`, data),
+  computeExpiry: (registrationStartDate) =>
+    API.get('/vehicles/compute-expiry', { params: { registration_start_date: registrationStartDate } })
 };
 
 // ─── Drivers ──────────────────────────────────────────────────────────────────

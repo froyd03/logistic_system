@@ -109,6 +109,11 @@ exports.approve = async (req, res, next) => {
 
     const { vehicle_id, driver_id } = req.body;
 
+    //input & data validation
+    if(!vehicle_id || !driver_id){
+      return errorResponse(res, 'Complete fields before submitting', 409);
+    }
+
     // Validate vehicle
     if (vehicle_id) {
       const vehicle = await Vehicle.findByPk(vehicle_id);
@@ -118,6 +123,11 @@ exports.approve = async (req, res, next) => {
       if (vehicle.insurance_expiry && new Date(vehicle.insurance_expiry) < today) {
         return errorResponse(res, 'Vehicle insurance has expired', 422);
       }
+
+      if(vehicle.registration_expiry && new Date(vehicle.registration_expiry) < today){
+        return errorResponse(res, 'Vehicle registration has expired', 422);
+      }
+      
       const overlap = await checkOverlap(vehicle_id, reservation.scheduled_start, reservation.scheduled_end, reservation.id);
       if (overlap) return errorResponse(res, 'Vehicle is already reserved for this time period', 409);
     }
@@ -175,7 +185,9 @@ exports.dispatch = async (req, res, next) => {
       const vehicle = await Vehicle.findByPk(reservation.vehicle_id, { transaction: t, lock: true });
       const driver = await Driver.findByPk(reservation.driver_id, { transaction: t, lock: true });
 
-      if (vehicle.status !== 'available') throw new Error('Vehicle is no longer available');
+      // ── Cannot dispatch a vehicle under maintenance ───────────────────────
+      if (vehicle.status === 'maintenance') throw new Error(`Vehicle "${vehicle.name}" is currently under maintenance and cannot be dispatched. Complete the maintenance record first.`);
+      if (vehicle.status !== 'available') throw new Error(`Vehicle "${vehicle.name}" is not available (current status: ${vehicle.status})`);
       if (driver.status !== 'available') throw new Error('Driver is no longer available');
 
       // Update statuses

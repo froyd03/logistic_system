@@ -17,17 +17,26 @@ const Vehicle = sequelize.define('Vehicle', {
     type: DataTypes.ENUM('gasoline', 'diesel', 'electric', 'hybrid', 'lpg'),
     allowNull: false
   },
-  capacity: { type: DataTypes.INTEGER, allowNull: false, comment: 'Passenger or cargo capacity' },
+  capacity: { type: DataTypes.INTEGER, allowNull: false },
   capacity_unit: { type: DataTypes.ENUM('persons', 'kg', 'liters'), defaultValue: 'persons' },
   status: {
     type: DataTypes.ENUM('available', 'reserved', 'in_transit', 'maintenance', 'inactive'),
     defaultValue: 'available'
   },
   odometer_km: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
+
+  // ── Registration (Philippines LTO) ───────────────────────────────────────────
   registration_number: { type: DataTypes.STRING(50) },
+  // Date the vehicle was first registered — drives all computed expiry logic
+  registration_start_date: { type: DataTypes.DATEONLY },
+  // Auto-computed: registration_start_date + 3 years (new vehicle), or manually overridden on renewal
   registration_expiry: { type: DataTypes.DATEONLY },
+
+  // ── Insurance / CTPL (Philippines) ───────────────────────────────────────────
   insurance_number: { type: DataTypes.STRING(50) },
+  // Auto-computed: aligned to registration month, renewed yearly
   insurance_expiry: { type: DataTypes.DATEONLY },
+
   purchase_date: { type: DataTypes.DATEONLY },
   purchase_price: { type: DataTypes.DECIMAL(12, 2) },
   notes: { type: DataTypes.TEXT },

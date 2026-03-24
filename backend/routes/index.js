@@ -72,6 +72,14 @@ router.put('/auth/password', authenticate, authCtrl.changePassword);
  *         description: List of vehicles
  */
 router.get('/vehicles', authenticate, vehicleCtrl.getAll);
+// Compute expiry dates preview (used by frontend Add Vehicle form)
+router.get('/vehicles/compute-expiry', authenticate, (req, res) => {
+  const { computeExpiryDates } = require('../utils/vehicleDates');
+  const { registration_start_date } = req.query;
+  if (!registration_start_date) return res.status(422).json({ message: 'registration_start_date required' });
+  const result = computeExpiryDates(registration_start_date);
+  return res.json({ success: true, data: result });
+});
 router.get('/vehicles/stats', authenticate, vehicleCtrl.getStats);
 router.get('/vehicles/:id', authenticate, vehicleCtrl.getById);
 router.post('/vehicles', authenticate, authorize('admin', 'transport_manager'), vehicleCtrl.create);
@@ -80,6 +88,12 @@ router.delete('/vehicles/:id', authenticate, authorize('admin'), vehicleCtrl.arc
 router.get('/vehicles/:id/status-history', authenticate, vehicleCtrl.getStatusHistory);
 router.post('/vehicles/:id/maintenance', authenticate, authorize('admin', 'transport_manager'), vehicleCtrl.addMaintenance);
 router.post('/vehicles/:id/documents', authenticate, authorize('admin', 'transport_manager'), upload.single('file'), vehicleCtrl.uploadDocument);
+
+// ─── Maintenance status update & completion ───────────────────────────────────
+// PATCH /vehicles/:vehicleId/maintenance/:maintenanceId        → update status (dropdown)
+// PATCH /vehicles/:vehicleId/maintenance/:maintenanceId/complete → mark completed + free vehicle
+router.patch('/vehicles/:vehicleId/maintenance/:maintenanceId/complete', authenticate, authorize('admin', 'transport_manager'), vehicleCtrl.completeMaintenance);
+router.patch('/vehicles/:vehicleId/maintenance/:maintenanceId', authenticate, authorize('admin', 'transport_manager'), vehicleCtrl.updateMaintenanceStatus);
 
 // ─── Maintenance list (cross-vehicle) ──────────────────────────────────────
 router.get('/maintenance', authenticate, authorize('admin', 'transport_manager'), vehicleCtrl.getAllMaintenance);
