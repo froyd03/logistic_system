@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const Driver = require('../models/Driver');
 const User = require('../models/User');
 const { DriverPerformance, DriverIncident, TripLog } = require('../models/index');
+
 const { sequelize } = require('../models/associations');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/response');
 const { validationResult } = require('express-validator');
@@ -13,10 +14,11 @@ exports.getAll = async (req, res, next) => {
     const offset = (page - 1) * limit;
     const where = {};
     if (status) where.status = status;
+    // License/employee ID search on the driver table itself
     if (search) {
       where[Op.or] = [
         { license_number: { [Op.like]: `%${search}%` } },
-        { employee_id: { [Op.like]: `%${search}%` } }
+        { employee_id:    { [Op.like]: `%${search}%` } }
       ];
     }
 
@@ -33,8 +35,10 @@ exports.getAll = async (req, res, next) => {
     const data = rows.map(d => {
       const obj = d.toJSON();
       const expiry = moment(d.license_expiry);
+      const daysLeft = expiry.diff(today, 'days');
       obj.license_status = expiry.isBefore(today) ? 'expired'
-        : expiry.diff(today, 'days') <= 30 ? 'expiring_soon' : 'valid';
+        : daysLeft <= 60 ? 'expiring_soon' : 'valid';
+      obj.license_days_left = daysLeft;
       return obj;
     });
 
@@ -125,6 +129,33 @@ exports.addIncident = async (req, res, next) => {
       await driver.update({ status: 'suspended' });
     }
     return successResponse(res, incident, 'Incident recorded', 201);
+  } catch (err) { next(err); }
+};
+
+exports.getAllIncidents = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 20, severity, status, driver_id } = req.query;
+    const offset = (page - 1) * limit;
+    const where = {};
+    if (severity) where.severity = severity;
+    if (status) where.status = status;
+    if (driver_id) where.driver_id = driver_id;
+
+    const { count, rows } = await DriverIncident.findAndCountAll({
+      where,
+      include: [
+        {
+          model: Driver,
+          as: 'driver',
+          include: [{ model: User, as: 'user', attributes: ['id', 'name'] }]
+        },
+        { model: User, as: 'reporter', attributes: ['id', 'name'] }
+      ],
+      limit: parseInt(limit),
+      offset,
+      order: [['incident_date', 'DESC']]
+    });
+    return paginatedResponse(res, rows, count, page, limit, 'Incidents retrieved');
   } catch (err) { next(err); }
 };
 

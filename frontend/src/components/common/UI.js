@@ -3,24 +3,30 @@ import React from 'react';
 // Status Badge
 export const StatusBadge = ({ status }) => {
   const config = {
-    available: { bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500', label: 'Available' },
-    reserved: { bg: 'bg-blue-100', text: 'text-blue-800', dot: 'bg-blue-500', label: 'Reserved' },
-    in_transit: { bg: 'bg-yellow-100', text: 'text-yellow-800', dot: 'bg-yellow-500', label: 'In Transit' },
-    maintenance: { bg: 'bg-orange-100', text: 'text-orange-800', dot: 'bg-orange-500', label: 'Maintenance' },
-    inactive: { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400', label: 'Inactive' },
-    pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', dot: 'bg-yellow-500', label: 'Pending' },
-    approved: { bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500', label: 'Approved' },
-    rejected: { bg: 'bg-red-100', text: 'text-red-800', dot: 'bg-red-500', label: 'Rejected' },
-    dispatched: { bg: 'bg-purple-100', text: 'text-purple-800', dot: 'bg-purple-500', label: 'Dispatched' },
-    in_progress: { bg: 'bg-blue-100', text: 'text-blue-800', dot: 'bg-blue-500', label: 'In Progress' },
-    completed: { bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500', label: 'Completed' },
-    cancelled: { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400', label: 'Cancelled' },
+    available:             { bg: 'bg-green-100',  text: 'text-green-800',  dot: 'bg-green-500',  label: 'Available'       },
+    reserved:              { bg: 'bg-blue-100',   text: 'text-blue-800',   dot: 'bg-blue-500',   label: 'Reserved'        },
+    in_transit:            { bg: 'bg-indigo-100', text: 'text-indigo-800', dot: 'bg-indigo-500', label: 'In Transit'      },
+    maintenance_scheduled: { bg: 'bg-yellow-100', text: 'text-yellow-800', dot: 'bg-yellow-500', label: 'Scheduled'       },
+    under_maintenance:     { bg: 'bg-orange-100', text: 'text-orange-800', dot: 'bg-orange-500', label: 'Maintenance'     },
+    inactive:              { bg: 'bg-gray-100',   text: 'text-gray-500',   dot: 'bg-gray-400',   label: 'Inactive'        },
+
+    pending:     { bg: 'bg-yellow-100', text: 'text-yellow-800', dot: 'bg-yellow-500', label: 'Pending'     },
+    approved:    { bg: 'bg-green-100',  text: 'text-green-800',  dot: 'bg-green-500',  label: 'Approved'    },
+    rejected:    { bg: 'bg-red-100',    text: 'text-red-800',    dot: 'bg-red-500',    label: 'Rejected'    },
+    dispatched:  { bg: 'bg-purple-100', text: 'text-purple-800', dot: 'bg-purple-500', label: 'Dispatched'  },
+    in_progress: { bg: 'bg-blue-100',   text: 'text-blue-800',   dot: 'bg-blue-500',   label: 'In Progress' },
+    completed:   { bg: 'bg-green-100',  text: 'text-green-800',  dot: 'bg-green-500',  label: 'Completed'   },
+    cancelled:   { bg: 'bg-gray-100',   text: 'text-gray-600',   dot: 'bg-gray-400',   label: 'Cancelled'   },
+
     on_trip: { bg: 'bg-blue-100', text: 'text-blue-800', dot: 'bg-blue-500', label: 'On Trip' },
     suspended: { bg: 'bg-red-100', text: 'text-red-800', dot: 'bg-red-500', label: 'Suspended' },
     off_duty: { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400', label: 'Off Duty' },
+
     expired: { bg: 'bg-red-100', text: 'text-red-800', dot: 'bg-red-500', label: 'Expired' },
     expiring_soon: { bg: 'bg-yellow-100', text: 'text-yellow-800', dot: 'bg-yellow-500', label: 'Expiring Soon' },
-    valid: { bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500', label: 'Valid' }
+    valid: { bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500', label: 'Valid' },
+
+    scheduled:   { bg: 'bg-blue-100',   text: 'text-blue-800',   dot: 'bg-blue-400',   label: 'Scheduled'  },
   };
   const c = config[status] || { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400', label: status };
   return (

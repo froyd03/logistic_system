@@ -74,7 +74,7 @@ const seed = async () => {
         name: 'Toyota Fortuner', plate_number: 'ABC-1234', type: 'suv',
         brand: 'Toyota', model: 'Fortuner', year: 2022, color: 'Pearl White',
         fuel_type: 'diesel', capacity: 7, capacity_unit: 'persons',
-        status: 'available', odometer_km: 38420.50,
+        status: 'maintenance_scheduled', odometer_km: 38420.50,
         registration_number: 'LTO-2022-001234',
         registration_start_date: '2025-06-10',
         registration_expiry: '2028-06-10',
@@ -87,7 +87,7 @@ const seed = async () => {
         name: 'Hyundai H350 Van', plate_number: 'DEF-5678', type: 'van',
         brand: 'Hyundai', model: 'H350', year: 2021, color: 'Silver',
         fuel_type: 'diesel', capacity: 12, capacity_unit: 'persons',
-        status: 'available', odometer_km: 62150.00,
+        status: 'maintenance_scheduled', odometer_km: 62150.00,
         registration_number: 'LTO-2022-005678',
         registration_start_date: '2025-03-15',
         registration_expiry: '2028-03-15',
@@ -100,7 +100,7 @@ const seed = async () => {
         name: 'Toyota Land Cruiser', plate_number: 'GHI-9012', type: 'suv',
         brand: 'Toyota', model: 'Land Cruiser 300', year: 2023, color: 'Midnight Black',
         fuel_type: 'diesel', capacity: 8, capacity_unit: 'persons',
-        status: 'available', odometer_km: 14880.00,
+        status: 'in_transit', odometer_km: 14880.00,
         registration_number: 'LTO-2023-009012',
         registration_start_date: '2025-11-25',
         registration_expiry: '2028-11-25',
@@ -193,7 +193,7 @@ const seed = async () => {
         name: 'Suzuki APV Van', plate_number: 'PQR-1122', type: 'van',
         brand: 'Suzuki', model: 'APV', year: 2022, color: 'Cool Silver',
         fuel_type: 'gasoline', capacity: 8, capacity_unit: 'persons',
-        status: 'available', odometer_km: 58320.00,
+        status: 'maintenance_scheduled', odometer_km: 58320.00,
         registration_number: 'LTO-2022-011122',
         registration_start_date: '2022-06-30',
         registration_expiry: '2025-06-30',
@@ -207,7 +207,7 @@ const seed = async () => {
         name: 'Ford Ranger Raptor', plate_number: 'STU-3344', type: 'truck',
         brand: 'Ford', model: 'Ranger Raptor', year: 2022, color: 'Race Red',
         fuel_type: 'diesel', capacity: 5, capacity_unit: 'persons',
-        status: 'available', odometer_km: 41670.00,
+        status: 'reserved', odometer_km: 41670.00,
         registration_number: 'LTO-2022-013344',
         registration_start_date: '2025-03-15',
         registration_expiry: '2028-03-15',
@@ -252,26 +252,26 @@ const seed = async () => {
         name: 'Toyota Hiace Commuter', plate_number: 'BCD-9900', type: 'van',
         brand: 'Toyota', model: 'Hiace Commuter', year: 2022, color: 'White',
         fuel_type: 'diesel', capacity: 15, capacity_unit: 'persons',
-        status: 'maintenance', odometer_km: 89650.00,
+        status: 'under_maintenance', odometer_km: 89650.00,
         registration_number: 'LTO-2022-029900',
         registration_start_date: '2024-09-10',
         registration_expiry: '2027-09-10',
         insurance_expiry: '2025-09-10',
         purchase_date: '2022-11-28', purchase_price: 2180000,
-        notes: '🔧 Transmission overhaul in progress at Toyota Service Center — ETA 3 days', is_active: true
+        notes: 'Transmission overhaul in progress at Toyota Service Center — ETA 3 days', is_active: true
       },
       {
         // V11 — Tucson, reg valid (May 2026), brake system in maintenance 🔧
         name: 'Hyundai Tucson', plate_number: 'EFG-1234', type: 'suv',
         brand: 'Hyundai', model: 'Tucson CRDi', year: 2023, color: 'Abyss Black',
         fuel_type: 'diesel', capacity: 5, capacity_unit: 'persons',
-        status: 'maintenance', odometer_km: 31240.00,
+        status: 'under_maintenance', odometer_km: 31240.00,
         registration_number: 'LTO-2023-031234',
         registration_start_date: '2025-03-15',
         registration_expiry: '2028-03-15',
         insurance_expiry: '2026-03-15',
         purchase_date: '2023-05-20', purchase_price: 2250000,
-        notes: '🔧 Brake system replacement + wheel alignment in progress', is_active: true
+        notes: 'Brake system replacement + wheel alignment in progress', is_active: true
       },
     ]);
     console.log(`✅ Vehicles seeded (${vehicles.length} vehicles — all groups covered)`);
@@ -293,8 +293,8 @@ const seed = async () => {
     // VEHICLE STATUS HISTORY
     // ═══════════════════════════════════════════════════════════════════════
     await VehicleStatusHistory.bulkCreate([
-      { vehicle_id: V10.id, from_status: 'available', to_status: 'maintenance', changed_by: manager.id, reason: 'Transmission overhaul — gear slipping at 3rd-4th. Brought to Toyota Service Center Makati.', createdAt: new Date('2025-03-20') },
-      { vehicle_id: V11.id, from_status: 'available', to_status: 'maintenance', changed_by: manager.id, reason: 'Brake pad + rotor replacement. Wheel alignment required after incident on C5 Road.', createdAt: new Date('2025-03-22') },
+      { vehicle_id: V10.id, from_status: 'available', to_status: 'under_maintenance', changed_by: manager.id, reason: 'Transmission overhaul — gear slipping at 3rd-4th. Brought to Toyota Service Center Makati.', createdAt: new Date('2025-03-20') },
+      { vehicle_id: V11.id, from_status: 'available', to_status: 'under_maintenance', changed_by: manager.id, reason: 'Brake pad + rotor replacement. Wheel alignment required after incident on C5 Road.', createdAt: new Date('2025-03-22') },
       { vehicle_id: V08.id, from_status: 'available', to_status: 'inactive',    changed_by: admin.id,   reason: 'Registration expired Nov 5, 2024 — grounded per LTO policy. Renewal budget approved Q1 2025.', createdAt: new Date('2024-11-06') },
       { vehicle_id: V09.id, from_status: 'available', to_status: 'inactive',    changed_by: admin.id,   reason: 'Registration expired Aug 12, 2024 — grounded. Evaluation for fleet renewal ongoing.', createdAt: new Date('2024-08-13') },
     ]);
@@ -572,29 +572,6 @@ const seed = async () => {
 
       // ── APPROVED (3) — vehicle + driver assigned, not yet dispatched ─────
       {
-        reservation_code: 'RES-000004',
-        requester_id: robertoU.id, vehicle_id: V01.id, driver_id: juan.id,
-        purpose: 'guest_transport',
-        description: 'VIP pickup — Korean tech company CEO from NAIA T1',
-        pickup_location: 'NAIA Terminal 1, Pasay', dropoff_location: 'Raffles Makati',
-        scheduled_start: new Date('2025-03-25T14:30:00'), scheduled_end: new Date('2025-03-25T16:00:00'),
-        passenger_count: 1, priority: 'urgent', status: 'approved',
-        approved_by: manager.id, approved_at: new Date('2025-03-24T09:00:00'),
-        special_instructions: 'Mr. Kim Seung-Ho. Single passenger, heavy luggage. Fortuner requested by guest.',
-        estimated_cost: 950.00
-      },
-      {
-        reservation_code: 'RES-000005',
-        requester_id: mariaU.id, vehicle_id: V13.id, driver_id: pedro.id,
-        purpose: 'staff_shuttle',
-        description: 'Evening closing shift shuttle — 14 staff members to Cubao terminal',
-        pickup_location: 'Hotel Main Entrance, Makati', dropoff_location: 'Araneta Center, Cubao',
-        scheduled_start: new Date('2025-03-25T23:00:00'), scheduled_end: new Date('2025-03-26T00:30:00'),
-        passenger_count: 14, priority: 'normal', status: 'approved',
-        approved_by: manager.id, approved_at: new Date('2025-03-24T10:00:00'),
-        estimated_cost: 700.00
-      },
-      {
         reservation_code: 'RES-000006',
         requester_id: carlosU.id, vehicle_id: V07.id, driver_id: rodrigo.id,
         purpose: 'other',
@@ -607,7 +584,6 @@ const seed = async () => {
         notes: '⚠️ Note: Ford Ranger registration expires Apr 10 — renewal must be completed before next dispatch.',
         estimated_cost: 1100.00
       },
-
       // ── REJECTED (2) — with clear reasons ────────────────────────────────
       {
         reservation_code: 'RES-000007',
@@ -721,7 +697,7 @@ const seed = async () => {
 
     const [
       R01,R02,R03,   // pending
-      R04,R05,R06,   // approved
+      R06,   // approved
       R07,R08,       // rejected
       R09,R10,       // cancelled
       R11,           // dispatched
@@ -1147,7 +1123,7 @@ const seed = async () => {
     console.log('  ✅  Valid registration, Available    — 9 vehicles (V01–V05, V12–V15)');
     console.log('  ⚠️   Expiring soon (<30 days)         — 2 vehicles (V06 APV, V07 Ranger)');
     console.log('  ❌  Expired registration, Inactive  — 2 vehicles (V08 L300, V09 Elf)');
-    console.log('  🔧  Under Maintenance               — 2 vehicles (V10 Hiace, V11 Tucson)');
+    console.log('  🔧  Under Maintenance (under_maint) — 2 vehicles (V10 Hiace, V11 Tucson)');
     console.log('\n  👤 DRIVER SUMMARY (8 drivers):');
     console.log('  ✅  Valid license, Available         — DRV-001 to DRV-005 (5 drivers)');
     console.log('  ⚠️   License expiring <60 days        — DRV-006 Rodrigo (Apr 30)');

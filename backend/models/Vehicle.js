@@ -20,7 +20,14 @@ const Vehicle = sequelize.define('Vehicle', {
   capacity: { type: DataTypes.INTEGER, allowNull: false },
   capacity_unit: { type: DataTypes.ENUM('persons', 'kg', 'liters'), defaultValue: 'persons' },
   status: {
-    type: DataTypes.ENUM('available', 'reserved', 'in_transit', 'maintenance', 'inactive'),
+    type: DataTypes.ENUM(
+      'available',            // ready to be assigned
+      'reserved',             // approved reservation, not yet dispatched
+      'in_transit',           // currently on a trip
+      'maintenance_scheduled',// maintenance record created, not yet started
+      'under_maintenance',    // maintenance actively in progress
+      'inactive'              // decommissioned / archived
+    ),
     defaultValue: 'available'
   },
   odometer_km: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },

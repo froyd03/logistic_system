@@ -166,17 +166,25 @@ exports.getDashboardStats = async (req, res, next) => {
     const currentMonth = new Date();
     const monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
+    const today = new Date();
+    const in30 = new Date(today.getTime() + 30 * 86400000);
+
     const [
       totalVehicles, activeDrivers, inTransit, pendingReservations,
-      monthlyExpense, fuelConsumption, completedTrips
+      monthlyExpense, fuelConsumption, completedTrips,
+      underMaintenance, maintenanceScheduled, expiredRegistration, expiringRegistration
     ] = await Promise.all([
       Vehicle.count({ where: { is_active: true } }),
       Driver.count({ where: { status: 'available', is_active: true } }),
-      Vehicle.count({ where: { status: 'in_transit' } }),
+      Vehicle.count({ where: { status: 'in_transit',         is_active: true } }),
       Reservation.count({ where: { status: 'pending' } }),
       TransportExpense.sum('amount', { where: { expense_date: { [Op.gte]: monthStart } } }),
       FuelLog.sum('liters', { where: { fuel_date: { [Op.gte]: monthStart } } }),
-      TripLog.count({ where: { status: 'completed', created_at: { [Op.gte]: monthStart } } })
+      TripLog.count({ where: { status: 'completed', created_at: { [Op.gte]: monthStart } } }),
+      Vehicle.count({ where: { status: 'under_maintenance',     is_active: true } }),
+      Vehicle.count({ where: { status: 'maintenance_scheduled', is_active: true } }),
+      Vehicle.count({ where: { is_active: true, registration_expiry: { [Op.lt]: today } } }),
+      Vehicle.count({ where: { is_active: true, registration_expiry: { [Op.between]: [today, in30] } } }),
     ]);
 
     // Trips per month (last 6 months)
@@ -211,7 +219,9 @@ exports.getDashboardStats = async (req, res, next) => {
       cards: {
         totalVehicles, activeDrivers, inTransit,
         pendingReservations, monthlyExpense: monthlyExpense || 0,
-        fuelConsumption: fuelConsumption || 0, completedTrips
+        fuelConsumption: fuelConsumption || 0, completedTrips,
+        underMaintenance: underMaintenance + maintenanceScheduled,
+        expiredRegistration, expiringRegistration
       },
       charts: { tripsPerMonth, vehicleStatus }
     });

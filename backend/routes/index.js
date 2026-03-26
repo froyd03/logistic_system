@@ -107,6 +107,7 @@ router.get('/drivers/:id/performance', authenticate, driverCtrl.getPerformance);
 router.get('/drivers/:id/incidents', authenticate, driverCtrl.getIncidents);
 router.post('/drivers/:id/incidents', authenticate, authorize('admin', 'transport_manager'), driverCtrl.addIncident);
 router.patch('/drivers/:id/rating', authenticate, driverCtrl.updateRating);
+router.get('/incidents', authenticate, authorize('admin', 'transport_manager'), driverCtrl.getAllIncidents);
 
 // ─── Reservation Routes ────────────────────────────────────────────────────────
 /**

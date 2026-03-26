@@ -26,6 +26,7 @@ const Reservation = sequelize.define('Reservation', {
   approved_at: { type: DataTypes.DATE },
   rejection_reason: { type: DataTypes.TEXT },
   cancellation_reason: { type: DataTypes.TEXT },
+  special_instructions: { type: DataTypes.TEXT },
   notes: { type: DataTypes.TEXT },
   estimated_cost: { type: DataTypes.DECIMAL(10, 2) }
 }, {

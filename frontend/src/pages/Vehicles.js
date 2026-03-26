@@ -23,10 +23,10 @@ const getRegStatus = (expiryDate) => {
 };
 
 const REG_STATUS_STYLE = {
-  expired:       { badge: 'bg-red-100 text-red-800 font-semibold', label: 'Expired'},
-  expiring_soon: { badge: 'bg-yellow-100 text-yellow-800 font-semibold',label: 'Expiring Soon'},
-  valid:         { badge: 'bg-green-100 text-green-700', label: 'Valid'},
-  unknown:       { badge: 'bg-gray-100 text-gray-500', label: 'Unknown'}
+  expired:       { badge: 'bg-red-100 text-red-800 font-semibold', label: 'Expired', status: 'expired'},
+  expiring_soon: { badge: 'bg-yellow-100 text-yellow-800 font-semibold',label: 'Expiring Soon', status: 'expiring_soon'},
+  valid:         { badge: 'bg-green-100 text-green-700', label: 'Valid', status: 'valid'},
+  unknown:       { badge: 'bg-gray-100 text-gray-500', label: 'Unknown', status: 'unknown'}
 };
 
 const RegistrationBadge = ({ expiryDate }) => {
@@ -41,6 +41,34 @@ const RegistrationBadge = ({ expiryDate }) => {
         <span>{s.icon}</span>
         <span className='text-xs font-mono'>{s.label}</span>
       </div>}
+    </div>
+  );
+};
+
+const VehicleExpiryBadge = ({ expiryDate }) => {
+  const status = getRegStatus(expiryDate);
+  const s = REG_STATUS_STYLE[status];
+  const days = expiryDate ? differenceInDays(new Date(expiryDate), new Date()) : null;
+
+  return (
+    <div className="flex flex-row items-center gap-2 space-y-0.5">
+     
+      {expiryDate && (
+        <div className="text-gray-500">
+          <span className='text-gray-900'>
+            {format(new Date(expiryDate), 'MMM dd, yyyy')}
+          </span>
+          {days !== null && days >= 0 && days <= 60 && (
+            <span className={`text-xs ml-1 ${days <= 30 ? 'text-red-600 font-medium' : 'text-yellow-600'}`}>
+              ({days}d left)
+            </span>
+          )}
+          {days !== null && days < 0 && (
+            <span className="text-xs ml-1 text-red-600 font-semibold">({Math.abs(days)}d overdue)</span>
+          )}
+        </div>
+      )}
+      <StatusBadge status={s.status} />
     </div>
   );
 };
@@ -372,8 +400,8 @@ const Vehicles = () => {
                 ['Year', modalState.data.year], ['Color', modalState.data.color],
                 ['Capacity', `${modalState.data.capacity} ${modalState.data.capacity_unit}`],
                 ['Odometer', `${Number(modalState.data.odometer_km).toLocaleString()} km`],
-                ['Reg. Expiry', modalState.data.registration_expiry || '—'],
-                ['Ins. Expiry', modalState.data.insurance_expiry || '—']
+                ['Reg. Expiry', <VehicleExpiryBadge expiryDate={modalState.data.registration_expiry} /> || '—'],
+                ['Ins. Expiry', <VehicleExpiryBadge expiryDate={modalState.data.insurance_expiry} /> || '—']
               ].map(([k, v]) => (
                 <div key={k}>
                   <span className="text-gray-500">{k}: </span>
@@ -381,7 +409,10 @@ const Vehicles = () => {
                 </div>
               ))}
             </div>
-            <div className="pt-2"><StatusBadge status={modalState.data.status} /></div>
+            <StatusBadge status={modalState?.data?.status} />
+            {modalState.data.notes && (
+              <div className="bg-gray-50 rounded-xl p-3 text-sm text-gray-600">{modalState.data.notes}</div>
+            )}
           </div>
         )}
       </Modal>

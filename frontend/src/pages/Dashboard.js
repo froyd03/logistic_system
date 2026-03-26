@@ -13,7 +13,14 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
-const STATUS_COLORS = { available: '#10B981', reserved: '#3B82F6', in_transit: '#F59E0B', maintenance: '#F97316', inactive: '#6B7280' };
+const STATUS_COLORS = { 
+  available:             '#10B981',  // green
+  reserved:              '#3B82F6',  // blue
+  in_transit:            '#6366F1',  // indigo
+  maintenance_scheduled: '#F59E0B',  // yellow
+  under_maintenance:     '#F97316',  // orange
+  inactive:              '#6B7280',  // gray
+};
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
